@@ -8,23 +8,59 @@ export default function LoginForm() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setLoading(true)
-    // 🔐 MOCK credentials
-    const MOCK_EMAIL = "student@test.com"
-    const MOCK_PASSWORD = "123456"
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    setTimeout(() => {
-        if (email === MOCK_EMAIL && password === MOCK_PASSWORD) {
-        document.cookie = "food_token=mock_token_123; path=/"
-        router.push("/")
-        } else {
-        setError("Invalid email or password")
-        setLoading(false)
-        }
-    }, 1000)
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    });
+
+
+    if (!response.ok) {
+      const data = await response.json();
+      setError(data.error || "Login failed");
+      setLoading(false);
+      return;
+    }
+
+    // ✅ Store access token in cookie
+    // document.cookie = `food_token=${data.access_token}; path=/`;
+
+    router.push("/");
+  } catch (err) {
+    setError("Cannot connect to server");
+    setLoading(false);
   }
+};
+  // const handleSubmit = (e) => {
+  //   e.preventDefault()
+  //   setLoading(true)
+  //   // 🔐 MOCK credentials
+  //   const MOCK_EMAIL = "student@test.com"
+  //   const MOCK_PASSWORD = "123456"
+
+  //   setTimeout(() => {
+  //       if (email === MOCK_EMAIL && password === MOCK_PASSWORD) {
+  //       document.cookie = "food_token=mock_token_123; path=/"
+  //       router.push("/")
+  //       } else {
+  //       setError("Invalid email or password")
+  //       setLoading(false)
+  //       }
+  //   }, 1000)
+  // }
 
   return (
     <div className="min-h-screen w-full bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 py-12">
