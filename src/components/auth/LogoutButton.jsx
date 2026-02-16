@@ -8,7 +8,8 @@ export default function LogoutButton() {
   const handleLogout = () => {
 
     // ❌ delete cookie
-    document.cookie = "food_token=; path=/; max-age=0"
+    document.cookie = "access_token=; path=/; max-age=0"
+    document.cookie = "refresh_token=; path=/; max-age=0"
 
     // 🔁 go to login
  
