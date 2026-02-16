@@ -26,10 +26,9 @@ export default function LoginForm() {
         password: password,
       }),
     });
-
+    const data = await response.json();
 
     if (!response.ok) {
-      const data = await response.json();
       setError(data.error || "Login failed");
       setLoading(false);
       return;
@@ -37,7 +36,8 @@ export default function LoginForm() {
 
     // ✅ Store access token in cookie
     // document.cookie = `food_token=${data.access_token}; path=/`;
-
+    document.cookie = `access_token=${data.access_token}; path=/`;
+    document.cookie = `refresh_token=${data.refresh_token}; path=/`;
     router.push("/");
   } catch (err) {
     setError("Cannot connect to server");
